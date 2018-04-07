@@ -1,0 +1,10 @@
+while(len >= 8) {
+            writeByte();
+        }
+    }
+
+    public void writeMultipleBlock(int b) throws IOException {
+        data = data << 23;
+        data |= b & 0x7FFFFF;
+        len += 23;
+        wrivatelen >= 8) {
