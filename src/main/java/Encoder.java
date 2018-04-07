@@ -68,9 +68,9 @@ public class Encoder {
                 encodeByteBlockFromBuffer(loc, rep.length());
             }
             dic.addToIndex(buffer.substring(0, encodeEnd).toCharArray());
-            if(dic.size() > 65536) {
-                dic.removeFirstFromIndex(dic.size() - 65536);
-            }
+//            if(dic.size() > 65536) {
+//                dic.removeFirstFromIndex(dic.size() - 65536);
+//            }
             removeFirstFromBuffer(encodeEnd);
         }
         return false;//false if failed

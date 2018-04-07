@@ -19,14 +19,26 @@ public class EncoderDictionary {
 
     public void addToIndex(char c) {
         pastBytes.append(c);
-        if(pastBytes.length() >= 3) {
-            int start = size() - 3;
-            while (start >= 0 && size() - start <= 66) {
-                cache.put(pastBytes.substring(start), absoluteIndex);
+        if(size() >= 3) {
+            int offset = (internalSize() - size());
+            int start = internalSize() - 3;
+            while (start >= offset && internalSize() - start <= 66) {
+                String k = pastBytes.substring(start);
+                cache.put(k, absoluteIndex);
+//                keySets.add(k);
                 start--;
             }
-            absoluteIndex++;
         }
+        absoluteIndex++;
+//        if(internalSize() > 65536 * 2) { //20MB max we could increase it to make it faster (clears cache)
+//            String k = keySets.remove(0);
+//            while(cache.get(k) < (absoluteIndex - size())) {
+//                cache.remove(k);
+//                k = keySets.remove(0);
+//            }
+//            int n = internalSize() - 65536;
+//            removeFirstFromIndex(n);
+//        }
     }
 
     public void addToIndex(char[] bytes) {
@@ -37,13 +49,13 @@ public class EncoderDictionary {
 
     public void removeFirstFromIndex() {
         if(pastBytes.length() == 0) return;
-        if(pastBytes.length() >= 3) {
-            int end = 3;
-            while (end <= 66 && end <= size()) {
-                cache.remove(pastBytes.substring(0, end));
-                end++;
-            }
-        }
+//        if(pastBytes.length() >= 3) {
+//            int end = 3;
+//            while (end <= 66 && end <= size()) {
+//                cache.remove(pastBytes.substring(0, end));
+//                end++;
+//            }
+//        }
         pastBytes.deleteCharAt(0);
     }
 
@@ -56,14 +68,18 @@ public class EncoderDictionary {
     }
 
     public boolean contains(String s) {
-        return cache.containsKey(s) && cache.get(s) >= absoluteIndex - size() ;
+        return cache.containsKey(s) && cache.get(s) >= absoluteIndex - size();
     }
 
     public int indexOf(String s) {
-        return pastBytes.indexOf(s);
+        return contains(s) ? pastBytes.lastIndexOf(s) - (internalSize() - size()) : -1;
     }
 
     public int size() {
+        return Math.min(pastBytes.length(), 65536);
+    }
+
+    public int internalSize() {
         return pastBytes.length();
     }
 
