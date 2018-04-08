@@ -4,9 +4,9 @@ import java.io.IOException;
 
 public class BlockWriter {
 
-    FileOutputStream fos;
-    int data;
-    int len;
+    protected FileOutputStream fos;
+    protected int data;
+    protected int len;
 
     public BlockWriter(String file) throws FileNotFoundException {
         fos = new FileOutputStream(file);
@@ -32,7 +32,15 @@ public class BlockWriter {
         }
     }
 
-    private void writeByte() throws IOException {
+    public void close() throws IOException {
+        if(len > 0) {
+            writeByte();
+        }
+        fos.flush();
+        fos.close();
+    }
+
+    protected void writeByte() throws IOException {
         if(len >= 8) {
             int block = data >>> len - 8;
             fos.write((byte) block);
@@ -43,14 +51,6 @@ public class BlockWriter {
             len = 0;
             data = 0;
         }
-    }
-
-    public void close() throws IOException {
-        if(len > 0) {
-            writeByte();
-        }
-        fos.flush();
-        fos.close();
     }
 
 }

@@ -4,11 +4,11 @@ import java.io.IOException;
 
 public class BlockReader {
 
-    FileInputStream fis;
+    protected FileInputStream fis;
 
-    int len;
+    protected int len;
 
-    int data;
+    protected int data;
 
     public BlockReader(String file) throws IOException {
         fis = new FileInputStream(file);
@@ -36,7 +36,11 @@ public class BlockReader {
         return next;
     }
 
-    private int getNextBlockSize() {
+    public void close() throws IOException {
+        fis.close();
+    }
+
+    protected int getNextBlockSize() {
         int type = data >>> len - 1;
         int size = 0;
         if(type == 0) {
@@ -47,16 +51,12 @@ public class BlockReader {
         return size;
     }
 
-    private void readBlock(int size) throws IOException {
+    protected void readBlock(int size) throws IOException {
         int b = 0;
         while(len <= size && (b = fis.read()) != -1) {
             data = data << 8;
             data |= b;
             len += 8;
         }
-    }
-
-    public void close() throws IOException {
-        fis.close();
     }
 }

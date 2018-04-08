@@ -17,7 +17,7 @@ public class Encoder {
         fos = new BlockWriter(target);
     }
 
-    public boolean loadBuffer() throws IOException {
+    private boolean loadBuffer() throws IOException {
         int b = 0;
         boolean loaded = false;
         while(buffer.length() <= 66 && (b = fis.read()) != -1) {
@@ -27,11 +27,11 @@ public class Encoder {
         return loaded;
     }
 
-    public void encodeSingleByteFromBuffer(int b) throws IOException {
+    private void encodeSingleByteFromBuffer(int b) throws IOException {
         fos.writeSingleByteBlock(b);
     }
 
-    public void encodeByteBlockFromBuffer(int loc, int ammount) throws IOException {
+    private void encodeByteBlockFromBuffer(int loc, int ammount) throws IOException {
         int block = 1 << 16;
         block |= loc - 1;//substracting offset
         block = block << 6;
@@ -46,7 +46,7 @@ public class Encoder {
             encoded = true;
         } catch (Exception e) {
             //log exception
-            System.out.print(e);
+            e.printStackTrace();
         } finally {
             if(fos!=null)
                 fos.close();
@@ -56,7 +56,11 @@ public class Encoder {
         return encoded;
     }
 
-    private boolean encodeFile() throws IOException {
+    public void removeFirstFromBuffer(int n) {
+        buffer.delete(0, n);
+    }
+
+    protected boolean encodeFile() throws IOException {
         //load file
         boolean loaded = false;
         while((loaded = loadBuffer())|| buffer.length() > 0) {
@@ -77,7 +81,7 @@ public class Encoder {
         return false;//false if failed
     }
 
-    private int getEncodingLength() {
+    protected int getEncodingLength() {
         int encodeEnd = 1;
         for(int i = buffer.length(); i >= 3; i--) {
             String currBytes = buffer.substring(0, i);
@@ -87,9 +91,5 @@ public class Encoder {
             }
         }
         return encodeEnd;
-    }
-
-    public void removeFirstFromBuffer(int n) {
-        buffer.delete(0, n);
     }
 }

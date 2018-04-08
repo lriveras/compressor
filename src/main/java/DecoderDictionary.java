@@ -1,7 +1,7 @@
 
 public class DecoderDictionary {
 
-    private StringBuilder pastBytes;
+    protected StringBuilder pastBytes;
 
     public DecoderDictionary() {
         pastBytes = new StringBuilder();
@@ -13,10 +13,6 @@ public class DecoderDictionary {
 
     public void addAllToIndex(char[] c) {
         pastBytes.append(c);
-    }
-
-    public void removeFirstFromIndex() {
-        pastBytes.deleteCharAt(0);
     }
 
     public void removeFirstFromIndex(int n) {
