@@ -1,7 +1,10 @@
 import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.concurrent.ArrayBlockingQueue;
 
 public class EncoderDictionary {
+
+    //will contain up to 5MB 65K * 66 B
+    HashMap<Integer, Integer> lastIndexOfSequence;
 
     //will contain up to 5MB 65K * 66 B
     HashMap<String, Integer> cache;
@@ -9,12 +12,13 @@ public class EncoderDictionary {
     StringBuilder pastBytes;
     //global position
     int absoluteIndex = 0;
-    LinkedList<String> keySets;
+    ArrayBlockingQueue<String> keySets;
 
     public EncoderDictionary() {
+        lastIndexOfSequence = new HashMap<Integer, Integer>();
         cache = new HashMap<String, Integer>();
         pastBytes = new StringBuilder();
-        keySets = new LinkedList<String>();
+        keySets = new ArrayBlockingQueue<String>(65536 * 2 * 66);
     }
 
     public void addToIndex(char c) {
@@ -22,19 +26,24 @@ public class EncoderDictionary {
         if(size() >= 3) {
             int offset = (internalSize() - size());
             int start = internalSize() - 3;
-            while (start >= offset && internalSize() - start <= 66) {
-                String k = pastBytes.substring(start);
-                cache.put(k, absoluteIndex);
+            String sequence = pastBytes.substring(internalSize() - Math.min(size(), 66));
+            if(!cache.containsKey(sequence)) {
+                while (start >= offset && internalSize() - start <= 66) {
+                    String k = pastBytes.substring(start);
+                    cache.put(k, absoluteIndex);
 //                keySets.add(k);
-                start--;
+                    start--;
+                }
+            } else {
+                lastIndexOfSequence.put(cache.get(sequence), absoluteIndex);
             }
         }
         absoluteIndex++;
 //        if(internalSize() > 65536 * 2) { //20MB max we could increase it to make it faster (clears cache)
-//            String k = keySets.remove(0);
+//            String k = keySets.remove();
 //            while(cache.get(k) < (absoluteIndex - size())) {
 //                cache.remove(k);
-//                k = keySets.remove(0);
+//                k = keySets.remove();
 //            }
 //            int n = internalSize() - 65536;
 //            removeFirstFromIndex(n);
@@ -68,11 +77,19 @@ public class EncoderDictionary {
     }
 
     public boolean contains(String s) {
-        return cache.containsKey(s) && cache.get(s) >= absoluteIndex - size();
+        return indexOf(s) >= 0;// && cache.get(s) >= absoluteIndex - size();
     }
 
     public int indexOf(String s) {
-        return contains(s) ? pastBytes.lastIndexOf(s) - (internalSize() - size()) : -1;
+        if(!cache.containsKey(s)) return -1;
+        int lastByteOfFirstRep = cache.get(s);
+        int firstIndexOf = cache.get(s) - s.length() + 1;
+        int lastIndexOf = -1;
+        if(lastIndexOfSequence.containsKey(lastByteOfFirstRep)) {
+            lastIndexOf = lastIndexOfSequence.get(lastByteOfFirstRep) - s.length() + 1;
+        }
+        int indexOf = Math.max(firstIndexOf, lastIndexOf) - (internalSize() - size());
+        return indexOf >= 0 ? indexOf : -1;
     }
 
     public int size() {

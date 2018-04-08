@@ -8,7 +8,7 @@ public class Main {
     public static void main(String[] args) throws IOException {
 
         long s = System.currentTimeMillis();
-        Encoder e = new Encoder("/Users/luke/IdeaProjects/compressor/src/main/resources/test.txt",
+        Encoder e = new Encoder("/Users/luke/IdeaProjects/compressor/src/main/resources/test-5mb.txt",
                 "/Users/luke/IdeaProjects/compressor/src/main/resources/encode.txt");
         e.encode();
         Decoder d = new Decoder("/Users/luke/IdeaProjects/compressor/src/main/resources/encode.txt",

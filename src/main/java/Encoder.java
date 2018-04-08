@@ -46,6 +46,7 @@ public class Encoder {
             encoded = true;
         } catch (Exception e) {
             //log exception
+            System.out.print(e);
         } finally {
             if(fos!=null)
                 fos.close();
