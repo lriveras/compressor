@@ -9,13 +9,14 @@ public class DecoderTest {
 
     @Test
     public void decodeTest() throws IOException {
-        Decoder d = new Decoder(TestUtils.ENCODED_BENCHMARK,
-                TestUtils.DECODED_OUTPUT);
+        String path = new File(".").getCanonicalPath();
+
+        Decoder d = new Decoder(path + TestUtils.ENCODED_BENCHMARK, path + TestUtils.DECODED_OUTPUT);
         d.decode();
 
 
-        File output = new File(TestUtils.DECODED_OUTPUT);
-        File benchmark = new File(TestUtils.DECODED_BENCHMARK);
+        File output = new File(path + TestUtils.DECODED_OUTPUT);
+        File benchmark = new File(path + TestUtils.DECODED_BENCHMARK);
         boolean isTwoEqual = FileUtils.contentEquals(output, benchmark);
         Assert.assertTrue(isTwoEqual);
 

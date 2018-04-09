@@ -9,13 +9,15 @@ public class BlockWriterTest {
 
     @Test
     public void writeEncodedSequenceTest() throws IOException {
-        BlockWriter w = new BlockWriter(TestUtils.ENCODED_BLOCK_OUTPUT);
+        String path = new File(".").getCanonicalPath();
+
+        BlockWriter w = new BlockWriter(path + TestUtils.ENCODED_BLOCK_OUTPUT);
         w.writeSingleByteBlock(0xC6);
         w.writeMultipleBlock(0x656365);
         w.close();
 
-        File output = new File(TestUtils.ENCODED_BLOCK_OUTPUT);
-        File benchmark = new File(TestUtils.ENCODED_BLOCK_OUTPUT);
+        File output = new File(path + TestUtils.ENCODED_BLOCK_OUTPUT);
+        File benchmark = new File(path +TestUtils.ENCODED_BLOCK_OUTPUT);
         boolean isTwoEqual = FileUtils.contentEquals(output, benchmark);
         Assert.assertTrue(isTwoEqual);
     }

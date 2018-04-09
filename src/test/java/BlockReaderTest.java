@@ -1,6 +1,7 @@
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.io.File;
 import java.io.IOException;
 
 public class BlockReaderTest {
@@ -10,7 +11,9 @@ public class BlockReaderTest {
 
     @Test
     public void readEncodedBlockTest() throws IOException {
-        BlockReader r = new BlockReader(TestUtils.ENCODED_BLOCK_BENCHMARK);
+        String path = new File(".").getCanonicalPath();
+
+        BlockReader r = new BlockReader(path + TestUtils.ENCODED_BLOCK_BENCHMARK);
         int encoded = r.next();
         Assert.assertEquals(encoded, SINGLE_BLOCK);
         encoded = r.next();
