@@ -18,6 +18,12 @@ public class Decoder {
     }
 
 
+    /**
+     * Reads encoded blocks and decodes them. If a block is single it writes the byte, if
+     * the block is encoded it gets the byte block form the dictionary and writes them to file
+     * @return
+     * @throws IOException
+     */
     public boolean decode() throws IOException {
         int b = 0;
         while((b = fis.next()) != -1) {

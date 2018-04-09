@@ -123,7 +123,7 @@ public class EncoderDictionary {
     }
 
     /**
-     * IndexNode is a helper class used in the dictionary to be store in the mapped value. The class will only contain an index.
+     * IndexNode is a helper class used in the dictionary to be stored in the mapped value. The class will only contain an index.
      * This is used to be able to change all indices already mapped to a repetition at once
      * instead of iterating through all the repetitions for a single character.
      * This class is useful in the clearIndex method for switching the old reference

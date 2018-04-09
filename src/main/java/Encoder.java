@@ -73,6 +73,10 @@ public class Encoder {
         buffer.delete(0, n);
     }
 
+    /**
+     * If no repetitions for at least 3 bytes are found it writes a single byte block, otherwise it writes an encoded block
+     * @throws IOException
+     */
     protected void encodeFile() throws IOException {
         boolean loaded = false;
         while((loaded = loadBuffer())|| buffer.length() > 0) {
@@ -91,7 +95,8 @@ public class Encoder {
     }
 
     /**
-     * Determines the ammount of bytes to include in the current block being encoded
+     * Determines the ammount of bytes to include in the current block being encoded by looking at repetitions in the dictionary from
+     * 66 bytes to 3 bytes if no repetition is found it will return length 1
      * @return ammount of bytes to encode
      */
     protected int getEncodingLength() {
