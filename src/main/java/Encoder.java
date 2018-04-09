@@ -5,8 +5,8 @@ import java.io.IOException;
 
 public class Encoder {
 
-    StringBuilder buffer;//always loaded with 66 B or less if remaining bytes are less than 66
-    EncoderDictionary dic;//always loaded with the past 65KB  and all its combinations up to 5MB
+    StringBuilder buffer;
+    EncoderDictionary dic;
     FileInputStream fis;
     BlockWriter fos;
 
