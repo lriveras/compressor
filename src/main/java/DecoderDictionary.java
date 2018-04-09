@@ -25,6 +25,10 @@ public class DecoderDictionary {
         return pastBytes.substring(start, end);
     }
 
+    public char charAt(int index) {
+        return pastBytes.charAt(index);
+    }
+
     public int size() {
         return pastBytes.length();
     }

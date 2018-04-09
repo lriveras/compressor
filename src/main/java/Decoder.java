@@ -27,8 +27,11 @@ public class Decoder {
                 int blockStart = dic.size() - (distance + 1);//adding offset
                 int blockEnd = blockStart + amount;
                 char[] block = dic.substring(blockStart, blockEnd).toCharArray();
-                writeBlock(block);
-                dic.addAllToIndex(block);
+                for (int i = blockStart; i < blockEnd; i++) {
+                    char data = dic.charAt(i);
+                    writeByte((byte) data);
+                    dic.addToIndex(data);
+                }
             } else {
                 fos.write((byte) b);
                 dic.addToIndex((char) b);
@@ -40,10 +43,8 @@ public class Decoder {
         return true;
     }
 
-    protected void writeBlock(char[] block) throws IOException {
-        for(char c : block) {
-            fos.write((byte) c);
-        }
+    protected void writeByte(byte b) throws IOException {
+        fos.write(b);
     }
 
     protected boolean isEncodedBlock(int b) {
