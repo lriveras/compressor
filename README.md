@@ -27,13 +27,20 @@ A rough analysis was made for the performance of the algorithm meassuring memory
 
 #### Encode Performance
 
-100KB Test	6s	360MB
+| File Size  | endTime - startTime (s)  | endTotalMemory - startTotalMemory (MB) |
+| --- | --- | --- |
+| 145KB | 6s | 360MB |
+| 6MB | 35s | 399MB |
+| 12MB | 53s | 548MB |
+| 116MB | 508s | 1122MB |
 
-5MB Test	  35s	399MB
 
-10MB Test	  53s	548MB
-
-100MB Test	508s	1122MB
+| Original File Size  | Compressed File Size  |
+| --- | --- |
+| 145KB | 22KB |
+| 6MB | 354KB |
+| 12MB | 693KB |
+| 116MB | 7MB |
 
 
 ## Decompressor
@@ -54,11 +61,11 @@ Performance tests also show a linear time complexity O(n) and contant space comp
 
 #### Decode Performance
 
-100KB Test	0s	  0MB
+| File Size  | endTime - startTime (s)  | endTotalMemory - startTotalMemory (MB) |
+| --- | --- | --- |
+| 145KB | 0s | 0MB |
+| 6MB | 12s | 26MB |
+| 12MB | 25s | 11MB |
+| 116MB | 255s | 10MB |
 
-5MBB Test	  32s	  27MB
-
-10MB Test	  65s	  51MB
-
-100MB Test	679s	10MB
 
