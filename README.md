@@ -19,7 +19,7 @@ Performance Analysis
 A rough analysis was made for the performance of the algorithm meassuring memory and time efficiency to characterize performance. It can be seen that the algorithm shows a linear time complexity
 
 Encode Performance
-100KB Test	7s	  373MB\n
+100KB Test	7s	  373MB
 5MB Test	  34s	  521MB
 10MB Test	  53s	  478MB
 100MB Test	488s	1109MB
