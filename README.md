@@ -64,8 +64,8 @@ Performance tests also show a linear time complexity O(n) and contant space comp
 | File Size  | endTime - startTime (s)  | endTotalMemory - startTotalMemory (MB) |
 | --- | --- | --- |
 | 145KB | 0s | 0MB |
-| 6MB | 32s | 27MB |
-| 12MB | 65s | 51MB |
-| 116MB | 679s | 10MB |
+| 6MB | 12s | 26MB |
+| 12MB | 25s | 11MB |
+| 116MB | 255s | 10MB |
 
 
