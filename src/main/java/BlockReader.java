@@ -1,5 +1,4 @@
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class BlockReader {
@@ -12,7 +11,7 @@ public class BlockReader {
 
     public BlockReader(String file) throws IOException {
         fis = new FileInputStream(file);
-        len = 8;
+        len = CompressorUtils.BYTE_LEN;
         data = fis.read();
     }
 
@@ -44,9 +43,9 @@ public class BlockReader {
         int type = data >>> len - 1;
         int size = 0;
         if(type == 0) {
-            size = 9;
+            size = CompressorUtils.SINGLE_BLOCK_BIT_LEN;
         } else if(type == 1) {
-            size = 23;
+            size = CompressorUtils.ENCODED_BLOCK_BIT_LEN;
         }
         return size;
     }
@@ -54,9 +53,9 @@ public class BlockReader {
     protected void readBlock(int size) throws IOException {
         int b = 0;
         while(len <= size && (b = fis.read()) != -1) {
-            data = data << 8;
+            data = data << CompressorUtils.BYTE_LEN;
             data |= b;
-            len += 8;
+            len += CompressorUtils.BYTE_LEN;
         }
     }
 }

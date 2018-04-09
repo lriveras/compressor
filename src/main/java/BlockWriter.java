@@ -15,19 +15,19 @@ public class BlockWriter {
     }
 
     public void writeSingleByteBlock(int b) throws IOException {
-        data = data << 9;
-        data |= b & 0x01FF;
-        len += 9;
-        while(len >= 8) {
+        data = data << CompressorUtils.SINGLE_BLOCK_BIT_LEN;
+        data |= b & CompressorUtils.FIRST_9_BITS_ON;
+        len += CompressorUtils.SINGLE_BLOCK_BIT_LEN;
+        while(len >= CompressorUtils.BYTE_LEN) {
             writeByte();
         }
     }
 
     public void writeMultipleBlock(int b) throws IOException {
-        data = data << 23;
-        data |= b & 0x7FFFFF;
-        len += 23;
-        while(len >= 8) {
+        data = data << CompressorUtils.ENCODED_BLOCK_BIT_LEN;
+        data |= b & CompressorUtils.FIRST_23_BITS_ON;
+        len += CompressorUtils.ENCODED_BLOCK_BIT_LEN;
+        while(len >= CompressorUtils.BYTE_LEN) {
             writeByte();
         }
     }
@@ -41,13 +41,13 @@ public class BlockWriter {
     }
 
     protected void writeByte() throws IOException {
-        if(len >= 8) {
-            int block = data >>> len - 8;
+        if(len >= CompressorUtils.BYTE_LEN) {
+            int block = data >>> len - CompressorUtils.BYTE_LEN;
             fos.write((byte) block);
-            data = data ^ (block << len - 8);
-            len -= 8;
+            data = data ^ (block << len - CompressorUtils.BYTE_LEN);
+            len -= CompressorUtils.BYTE_LEN;
         } else if (len > 0) {
-            fos.write((byte) data << 8 - len);
+            fos.write((byte) data << CompressorUtils.BYTE_LEN - len);
             len = 0;
             data = 0;
         }

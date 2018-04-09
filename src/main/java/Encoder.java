@@ -20,7 +20,7 @@ public class Encoder {
     private boolean loadBuffer() throws IOException {
         int b = 0;
         boolean loaded = false;
-        while(buffer.length() <= 66 && (b = fis.read()) != -1) {
+        while(buffer.length() <= CompressorUtils.MAX_ENCODING_LEN && (b = fis.read()) != -1) {
             buffer.append((char) b);
             loaded = true;
         }
@@ -32,10 +32,10 @@ public class Encoder {
     }
 
     private void encodeByteBlockFromBuffer(int loc, int ammount) throws IOException {
-        int block = 1 << 16;
-        block |= loc - 1;//substracting offset
-        block = block << 6;
-        block |= ammount - 3;//minus offset
+        int block = 1 << CompressorUtils.ENCODE_ADDRESS_BIT_LEN;
+        block |= loc - 1;//subtracting offset
+        block = block << CompressorUtils.ENCODE_AMMOUNT_BIT_LEN;
+        block |= ammount - CompressorUtils.MIN_ENCODING_LEN;//subtracting offset
         fos.writeMultipleBlock(block);
     }
 
@@ -44,9 +44,8 @@ public class Encoder {
         try {
             encodeFile();
             encoded = true;
-        } catch (Exception e) {
-            //log exception
-            e.printStackTrace();
+        } catch (IOException e) {
+            throw e;
         } finally {
             if(fos!=null)
                 fos.close();
@@ -60,8 +59,7 @@ public class Encoder {
         buffer.delete(0, n);
     }
 
-    protected boolean encodeFile() throws IOException {
-        //load file
+    protected void encodeFile() throws IOException {
         boolean loaded = false;
         while((loaded = loadBuffer())|| buffer.length() > 0) {
             int encodeEnd = getEncodingLength();
@@ -73,17 +71,14 @@ public class Encoder {
                 encodeByteBlockFromBuffer(loc, rep.length());
             }
             dic.addToIndex(buffer.substring(0, encodeEnd).toCharArray());
-//            if(dic.size() > 65536) {
-//                dic.removeFirstFromIndex(dic.size() - 65536);
-//            }
             removeFirstFromBuffer(encodeEnd);
         }
-        return false;//false if failed
+        return;
     }
 
     protected int getEncodingLength() {
         int encodeEnd = 1;
-        for(int i = buffer.length(); i >= 3; i--) {
+        for(int i = buffer.length(); i >= CompressorUtils.MIN_ENCODING_LEN; i--) {
             String currBytes = buffer.substring(0, i);
             if(dic.contains(currBytes)) {
                 encodeEnd = i;
