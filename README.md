@@ -1,4 +1,4 @@
-# compressor
+# Compressor
 
 Compressor
 The compressor uses the dictionary to check for repetitions int he latest 2^16 bytes of memory. If a repetition of more than 3 bytes is found it is encoded in a 23 block, otherwise the literal byte is written in a 9 bit block
@@ -14,7 +14,6 @@ Space vs Time Performance Trade-offs
 It is assumed there are no constrains in memory space for this problem, as it was required to make the algorithm as fast as possible. Not managing the deletions in the dictionary will make it as fast as it can be. A cap for the dictionary was also implemented but its disabled by default, the cap will ensure after an arbitrary fixed point (specified in the constants) indexes are deleted. Increasing the length of the dictionary will make the algorithm faster as it has to deal less with recalculation of previous repetitions.
 
 
-
 Performance Analysis
 
 A rough analysis was made for the performance of the algorithm meassuring memory and time efficiency to characterize performance. It can be seen that the algorithm shows a linear time complexity
@@ -24,8 +23,6 @@ Encode Performance
 5MB Test	  34s	  521MB
 10MB Test	  53s	  478MB
 100MB Test	488s	1109MB
-
-
 
 
 Decompressor
