@@ -1,10 +1,11 @@
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Timer;
 
 public class Main {
 
+    /**
+     * @param args -action -source -output
+     * @throws IOException
+     */
     public static void main(String[] args) throws IOException {
         if(args.length == 0) return;
         String command = args[0].substring(1);

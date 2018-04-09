@@ -1,6 +1,10 @@
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+/**
+ * Decoder will use a DecoderDictionary to maintain the past MAX_ADDRESS_LEN bytes in memory
+ * and will use the BlockReader to get 9 or 23 bits blocks from file and decompress the file
+ */
 public class Decoder {
 
     protected final FileOutputStream fos;

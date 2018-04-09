@@ -3,6 +3,12 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+/**
+ * Encoder uses EncoderDictionary to maintain the past MAX_ADDRESS_LEN bytes and all their
+ * combinations with length ranging from MIN_ENCODING_LEN to MAX_ENCODING_LEN
+ * while encoding if a combination of bytes is found in the dictionary it is encoded using the 23 bits encoding format
+ * 1 bit type - ENCODE_ADDRESS_BIT_LEN for address - ENCODE_AMMOUNT_BIT_LEN for the ammout of bytes encoded
+ */
 public class Encoder {
 
     StringBuilder buffer;
@@ -17,6 +23,11 @@ public class Encoder {
         fos = new BlockWriter(target);
     }
 
+    /**
+     * Maintains the buffer filled with MAX_ENCODING_LEN of characters to encode
+     * @return true if loaded bytes from file, false otherwise
+     * @throws IOException
+     */
     private boolean loadBuffer() throws IOException {
         int b = 0;
         boolean loaded = false;
@@ -55,6 +66,9 @@ public class Encoder {
         return encoded;
     }
 
+    /**
+     * @param n ammout of bytes to remove
+     */
     public void removeFirstFromBuffer(int n) {
         buffer.delete(0, n);
     }
@@ -76,6 +90,10 @@ public class Encoder {
         return;
     }
 
+    /**
+     * Determines the ammount of bytes to include in the current block being encoded
+     * @return ammount of bytes to encode
+     */
     protected int getEncodingLength() {
         int encodeEnd = 1;
         for(int i = buffer.length(); i >= CompressorUtils.MIN_ENCODING_LEN; i--) {

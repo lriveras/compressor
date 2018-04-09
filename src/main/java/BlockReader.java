@@ -1,6 +1,10 @@
 import java.io.FileInputStream;
 import java.io.IOException;
 
+/**
+ * BlockReader allows reading consiguous encoding blocks (9 or 23 bits)
+ * from a file until there are no more bits to read.
+ */
 public class BlockReader {
 
     protected FileInputStream fis;

@@ -1,4 +1,6 @@
-
+/**
+ * DecoderDictionary maintains n bytes in memory for them to be accessed later in time
+ */
 public class DecoderDictionary {
 
     protected StringBuilder pastBytes;

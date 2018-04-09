@@ -1,4 +1,6 @@
-
+/**
+ * Contains all the values regarding the compressor
+ */
 public class CompressorUtils {
 
     public static int BYTE_LEN = 8;

@@ -2,6 +2,10 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+/**
+ * BlockWriter allows writing blocks of 9 and 23 blocks to a file by maintaining
+ * the bits in memory until there are enough bits to be written in byte chunks.
+ */
 public class BlockWriter {
 
     protected FileOutputStream fos;
