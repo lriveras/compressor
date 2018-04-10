@@ -101,10 +101,11 @@ public class Encoder {
      */
     protected int getEncodingLength() {
         int encodeEnd = 1;
-        for(int i = buffer.length(); i >= CompressorUtils.MIN_ENCODING_LEN; i--) {
+        for(int i = CompressorUtils.MIN_ENCODING_LEN + 1; i <= buffer.length(); i++) {
             String currBytes = buffer.substring(0, i);
             if(dic.contains(currBytes)) {
                 encodeEnd = i;
+            } else {
                 break;
             }
         }

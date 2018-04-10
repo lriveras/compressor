@@ -91,7 +91,7 @@ public class EncoderDictionary {
     }
 
     public int size() {
-        return Math.min(pastBytes.length(), 65536);
+        return Math.min(pastBytes.length(), CompressorUtils.MAX_ADDRESS_LEN);
     }
 
     public int internalSize() {
