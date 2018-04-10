@@ -7,17 +7,13 @@ import java.util.HashMap;
  */
 public class EncoderDictionary {
 
-    HashMap<Integer, String> sequenceByLastCharAbsoluteIndex;
-    HashMap<Integer, IndexNode> lastIndexByFirstIndexOfSequence;
-    HashMap<String, IndexNode> lastCharAbsoluteIndexBySequence;
+    HashMap<String, Integer> lastCharAbsoluteIndexBySequence;
     private StringBuilder pastBytes;
     private int absoluteIndex = 0;
     private int deleteIndex = 0;
 
     public EncoderDictionary() {
-        sequenceByLastCharAbsoluteIndex = new HashMap<Integer, String>();
-        lastIndexByFirstIndexOfSequence = new HashMap<Integer, IndexNode>();
-        lastCharAbsoluteIndexBySequence = new HashMap<String, IndexNode>();
+        lastCharAbsoluteIndexBySequence = new HashMap<String, Integer>();
         pastBytes = new StringBuilder();
     }
 
@@ -32,21 +28,14 @@ public class EncoderDictionary {
         if(size() >= CompressorUtils.MIN_ENCODING_LEN) {
             int offset = (internalSize() - size());
             int start = internalSize() - CompressorUtils.MIN_ENCODING_LEN;
-            String sequence = pastBytes.substring(internalSize() - Math.min(size(), CompressorUtils.MAX_ENCODING_LEN));
-            IndexNode absoluteIndexNode = new IndexNode(absoluteIndex);
-            if(!lastCharAbsoluteIndexBySequence.containsKey(sequence)) {
-                while (start >= offset && internalSize() - start <= CompressorUtils.MAX_ENCODING_LEN) {
-                    String k = pastBytes.substring(start);
-                    lastCharAbsoluteIndexBySequence.put(k, absoluteIndexNode);
-                    start--;
-                }
-                sequenceByLastCharAbsoluteIndex.put(absoluteIndexNode.getIndex(), sequence);
-            } else {
-                lastIndexByFirstIndexOfSequence.put(lastCharAbsoluteIndexBySequence.get(sequence).getIndex(), absoluteIndexNode);
+            while (start >= offset && internalSize() - start <= CompressorUtils.MAX_ENCODING_LEN) {
+                String k = pastBytes.substring(start);
+                lastCharAbsoluteIndexBySequence.put(k, absoluteIndex);
+                start--;
             }
         }
         absoluteIndex++;
-//        clearIndex();
+        clearIndex();
     }
 
     /**
@@ -54,22 +43,9 @@ public class EncoderDictionary {
      * This operation becomes expensive as the dictionary size increases as it will iterate once through every removed character
      */
     protected void clearIndex() {
-        int diff = absoluteIndex - deleteIndex >= 0 ? absoluteIndex - deleteIndex : Integer.MAX_VALUE - deleteIndex + absoluteIndex;
+        int diff = internalSize() - size();
         while(diff >  CompressorUtils.MAX_ENCODER_DICTIONARY_LEN) {
-            IndexNode deleteIndexNode = new IndexNode(deleteIndex);
-            String sequenceToSwitch = sequenceByLastCharAbsoluteIndex.get(deleteIndexNode.getIndex());
-            IndexNode firstIndexOfSeq = lastCharAbsoluteIndexBySequence.get(sequenceToSwitch);
-            if(firstIndexOfSeq != null && lastIndexByFirstIndexOfSequence.containsKey(firstIndexOfSeq.getIndex())) {
-                int newFirstIndex = lastIndexByFirstIndexOfSequence.get(firstIndexOfSeq.getIndex()).getIndex();
-                lastIndexByFirstIndexOfSequence.remove(firstIndexOfSeq.getIndex());
-                firstIndexOfSeq.setIndex(newFirstIndex);
-            } else {
-                lastCharAbsoluteIndexBySequence.remove(sequenceToSwitch);
-            }
-            pastBytes.deleteCharAt(0);
-            sequenceByLastCharAbsoluteIndex.remove(deleteIndexNode.getIndex());
-            deleteIndex++;
-            diff = absoluteIndex - deleteIndex >= 0 ? absoluteIndex - deleteIndex : Integer.MAX_VALUE - deleteIndex + absoluteIndex;
+            removeFirstFromIndex();
         }
     }
 
@@ -81,6 +57,14 @@ public class EncoderDictionary {
 
     public void removeFirstFromIndex() {
         if(pastBytes.length() == 0) return;
+        if(pastBytes.length() >= CompressorUtils.MIN_ENCODING_LEN) {
+            int end = CompressorUtils.MAX_ENCODING_LEN;
+            while (end >= CompressorUtils.MIN_ENCODING_LEN && end <= size()) {
+                String k = pastBytes.substring(0, end);
+                lastCharAbsoluteIndexBySequence.remove(k);
+                end--;
+            }
+        }
         pastBytes.deleteCharAt(0);
     }
 
@@ -93,7 +77,7 @@ public class EncoderDictionary {
     }
 
     public boolean contains(String s) {
-        return indexOf(s) >= 0;
+        return lastCharAbsoluteIndexBySequence.containsKey(s) && lastCharAbsoluteIndexBySequence.get(s) >= absoluteIndex - size();
     }
 
     /**
@@ -103,22 +87,14 @@ public class EncoderDictionary {
      * @return the index of the sequence if found, -1 otherwise
      */
     public int indexOf(String s) {
-        if(!lastCharAbsoluteIndexBySequence.containsKey(s)) return -1;
-        int lastByteOfFirstRep = lastCharAbsoluteIndexBySequence.get(s).getIndex();
-        int firstIndexOf = lastCharAbsoluteIndexBySequence.get(s).getIndex() - s.length() + 1;
-        int lastIndexOf = -1;
-        if(lastIndexByFirstIndexOfSequence.containsKey(lastByteOfFirstRep)) {
-            lastIndexOf = lastIndexByFirstIndexOfSequence.get(lastByteOfFirstRep).getIndex() - s.length() + 1;
-        }
-        int indexOf = Math.max(firstIndexOf, lastIndexOf) - (internalSize() - size());
-        return indexOf >= 0 ? indexOf : -1;
+        return contains(s) ? pastBytes.lastIndexOf(s) - (internalSize() - size()) : -1;
     }
 
     public int size() {
-        return Math.min(pastBytes.length(), CompressorUtils.MAX_ADDRESS_LEN);
+        return Math.min(pastBytes.length(), 65536);
     }
 
-    protected int internalSize() {
+    public int internalSize() {
         return pastBytes.length();
     }
 
@@ -129,24 +105,24 @@ public class EncoderDictionary {
      * This class is useful in the clearIndex method for switching the old reference
      * of an index without iterating through all the combinations
      */
-    protected class IndexNode {
-        protected int index;
-        public IndexNode(int index) {
-            this.index = index;
-        }
-
-        public int getIndex() {
-            return  index;
-        }
-
-        public void setIndex(int index) {
-            this.index = index;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if(!(o instanceof IndexNode)) return false;
-            return ((IndexNode) o).getIndex() == this.getIndex();
-        }
-    }
+//    protected class IndexNode {
+//        protected int index;
+//        public IndexNode(int index) {
+//            this.index = index;
+//        }
+//
+//        public int getIndex() {
+//            return  index;
+//        }
+//
+//        public void setIndex(int index) {
+//            this.index = index;
+//        }
+//
+//        @Override
+//        public boolean equals(Object o) {
+//            if(!(o instanceof IndexNode)) return false;
+//            return ((IndexNode) o).getIndex() == this.getIndex();
+//        }
+//    }
 }
