@@ -29,10 +29,10 @@ A rough analysis was made for the performance of the algorithm meassuring memory
 
 | File Size  | endTime - startTime (s)  | endTotalMemory - startTotalMemory (MB) |
 | --- | --- | --- |
-| 145KB | 6s | 360MB |
-| 6MB | 35s | 399MB |
-| 12MB | 53s | 548MB |
-| 116MB | 508s | 1122MB |
+| 145KB | 3s | 359MB |
+| 6MB | 19s | 459MB |
+| 12MB | 33s | 552MB |
+| 116MB | 295s | 785MB |
 
 
 | Original File Size  | Compressed File Size  |
