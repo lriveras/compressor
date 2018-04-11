@@ -1,6 +1,7 @@
+import javafx.util.Pair;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 
 /**
@@ -80,16 +81,18 @@ public class Encoder {
     protected void encodeFile() throws IOException {
         boolean loaded = false;
         while((loaded = loadBuffer())|| buffer.length() > 0) {
-            int encodeEnd = getEncodingLength();
-            if(encodeEnd == 1) {
+            Pair<Integer, String> encode = getEncodingLocation();
+            if(encode.getKey() == -1) {
                 encodeSingleByteFromBuffer(buffer.charAt(0));
+                dic.addToIndex(buffer.charAt(0));
+                removeFirstFromBuffer(1);
             } else {
-                String rep = buffer.substring(0, encodeEnd);
-                int loc = dic.size() - dic.indexOf(rep);
+                String rep = encode.getValue();
+                int loc = dic.size() - encode.getKey();
                 encodeByteBlockFromBuffer(loc, rep.length());
+                dic.addToIndex(buffer.substring(0, encode.getValue().length()).toCharArray());
+                removeFirstFromBuffer(encode.getValue().length());
             }
-            dic.addToIndex(buffer.substring(0, encodeEnd).toCharArray());
-            removeFirstFromBuffer(encodeEnd);
         }
         return;
     }
@@ -99,16 +102,18 @@ public class Encoder {
      * 66 bytes to 3 bytes if no repetition is found it will return length 1
      * @return ammount of bytes to encode
      */
-    protected int getEncodingLength() {
-        int encodeEnd = 1;
-        for(int i = CompressorUtils.MIN_ENCODING_LEN + 1; i <= buffer.length(); i++) {
+    protected Pair<Integer, String> getEncodingLocation() {
+        int end = Math.min(buffer.length(), CompressorUtils.MAX_ENCODING_LEN);
+        Pair encode = new Pair(-1, null);
+        for(int i = CompressorUtils.MIN_ENCODING_LEN; i <= end; i++) {
             String currBytes = buffer.substring(0, i);
-            if(dic.contains(currBytes)) {
-                encodeEnd = i;
+            int index = dic.indexOf(currBytes);
+            if(index >= 0) {
+                encode = new Pair(index, currBytes);
             } else {
                 break;
             }
         }
-        return encodeEnd;
+        return encode;
     }
 }

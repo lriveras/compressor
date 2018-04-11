@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -7,13 +8,14 @@ import java.util.HashMap;
  */
 public class EncoderDictionary {
 
-    HashMap<String, Integer> lastCharAbsoluteIndexBySequence;
+    HashMap<String, ArrayList<Integer>> sequenceIndices;
     private StringBuilder pastBytes;
     private int absoluteIndex = 0;
-    private int deleteIndex = 0;
+    private int addOffset = 0;
+    private int removeOffset = 0;
 
     public EncoderDictionary() {
-        lastCharAbsoluteIndexBySequence = new HashMap<String, Integer>();
+        sequenceIndices = new HashMap<String, ArrayList<Integer>>();
         pastBytes = new StringBuilder();
     }
 
@@ -26,15 +28,17 @@ public class EncoderDictionary {
     public void addToIndex(char c) {
         pastBytes.append(c);
         if(size() >= CompressorUtils.MIN_ENCODING_LEN) {
-            int offset = (internalSize() - size());
-            int start = internalSize() - CompressorUtils.MIN_ENCODING_LEN;
-            while (start >= offset && internalSize() - start <= CompressorUtils.MAX_ENCODING_LEN) {
-                String k = pastBytes.substring(start);
-                lastCharAbsoluteIndexBySequence.put(k, absoluteIndex);
-                start--;
+            int start = size() - CompressorUtils.MIN_ENCODING_LEN;
+            String k = pastBytes.substring(start);
+            if(sequenceIndices.containsKey(k)) {
+                sequenceIndices.get(k).add(addOffset);
+            } else {
+                ArrayList<Integer> indices = new ArrayList();
+                indices.add(addOffset);
+                sequenceIndices.put(k, indices);
             }
+            addOffset = ++addOffset % CompressorUtils.MAX_ADDRESS_LEN;
         }
-        absoluteIndex++;
         clearIndex();
     }
 
@@ -43,8 +47,7 @@ public class EncoderDictionary {
      * This operation becomes expensive as the dictionary size increases as it will iterate once through every removed character
      */
     protected void clearIndex() {
-        int diff = internalSize() - size();
-        while(diff >  CompressorUtils.MAX_ENCODER_DICTIONARY_LEN) {
+        while(size() >  CompressorUtils.MAX_ADDRESS_LEN) {
             removeFirstFromIndex();
         }
     }
@@ -58,26 +61,19 @@ public class EncoderDictionary {
     public void removeFirstFromIndex() {
         if(pastBytes.length() == 0) return;
         if(pastBytes.length() >= CompressorUtils.MIN_ENCODING_LEN) {
-            int end = CompressorUtils.MAX_ENCODING_LEN;
-            while (end >= CompressorUtils.MIN_ENCODING_LEN && end <= size()) {
-                String k = pastBytes.substring(0, end);
-                lastCharAbsoluteIndexBySequence.remove(k);
-                end--;
+            String k = pastBytes.substring(0, CompressorUtils.MIN_ENCODING_LEN);
+            if(sequenceIndices.containsKey(k) && sequenceIndices.get(k).size() > 0) {
+                sequenceIndices.get(k).remove(0);
+            } else if(sequenceIndices.containsKey(k) && sequenceIndices.get(k).isEmpty()) {
+                sequenceIndices.remove(k);
             }
         }
         pastBytes.deleteCharAt(0);
-    }
-
-    public void removeFirstFromIndex(int n) {
-        int toRemove = n;
-        while(toRemove > 0) {
-            removeFirstFromIndex();
-            toRemove--;
-        }
+        removeOffset = ++removeOffset % CompressorUtils.MAX_ADDRESS_LEN;
     }
 
     public boolean contains(String s) {
-        return lastCharAbsoluteIndexBySequence.containsKey(s) && lastCharAbsoluteIndexBySequence.get(s) >= absoluteIndex - size();
+        return sequenceIndices.containsKey(s);
     }
 
     /**
@@ -87,14 +83,30 @@ public class EncoderDictionary {
      * @return the index of the sequence if found, -1 otherwise
      */
     public int indexOf(String s) {
-        return contains(s) ? pastBytes.lastIndexOf(s) - (internalSize() - size()) : -1;
+        if(s.length() < CompressorUtils.MIN_ENCODING_LEN ) return -1;
+        String k = s.substring(0, CompressorUtils.MIN_ENCODING_LEN);
+        if(!sequenceIndices.containsKey(k)) return -1;
+        ArrayList<Integer> allRepetitions = sequenceIndices.get(k);
+        for(int repStart : allRepetitions) {
+            int index = getIndexOf(repStart, s);
+            if(index >= 0) {
+                return index;
+            }
+        }
+        return -1;
+    }
+
+    protected int getIndexOf(int start, String s) {
+        int index = start >= removeOffset ? start - removeOffset : pastBytes.length() - removeOffset;
+        for(int i = 0; i < s.length(); i++) {
+            if(pastBytes.length() == (i + index) || s.charAt(i) != pastBytes.charAt(i + index)) {
+                return -1;
+            }
+        }
+        return  index;
     }
 
     public int size() {
-        return Math.min(pastBytes.length(), CompressorUtils.MAX_ADDRESS_LEN);
-    }
-
-    public int internalSize() {
         return pastBytes.length();
     }
 
