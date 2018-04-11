@@ -28,18 +28,20 @@ A rough analysis was made for the performance of the algorithm meassuring memory
 
 | File Size  | endTime - startTime (s)  | endTotalMemory - startTotalMemory (MB) |
 | --- | --- | --- |
-| 145KB | 3s | 359MB |
-| 6MB | 19s | 459MB |
-| 12MB | 33s | 552MB |
-| 116MB | 295s | 785MB |
+| 100KB | 1s | 39MB |
+| 1MB | 6s | 21MB |
+| 5MB | 48s | 26MB |
+| 10MB | 125s | 46MB |
+| 100MB | 1257s | 40MB |
 
 
 | Original File Size  | Compressed File Size  |
 | --- | --- |
-| 145KB | 22KB |
-| 6MB | 354KB |
-| 12MB | 693KB |
-| 116MB | 7MB |
+| 100KB | 38KB |
+| 1MB | 257KB |
+| 5MB | 2MB |
+| 10MB | 6MB |
+| 100MB | 56MB |
 
 
 ## Decompressor
@@ -62,9 +64,10 @@ Performance tests also show a linear time complexity O(n).
 
 | File Size  | endTime - startTime (s)  | endTotalMemory - startTotalMemory (MB) |
 | --- | --- | --- |
-| 145KB | 0s | 0MB |
-| 6MB | 12s | 26MB |
-| 12MB | 25s | 11MB |
-| 116MB | 255s | 10MB |
+| 100KB | 0s | 0MB |
+| 1MB | 5s | 7MB |
+| 5MB | 35s | 4MB |
+| 10MB | 75s | 31MB |
+| 100MB | 805s | 20MB |
 
 
