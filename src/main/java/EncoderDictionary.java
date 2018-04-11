@@ -1,5 +1,3 @@
-import javafx.util.Pair;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -84,38 +82,34 @@ public class EncoderDictionary {
      * @param s sequence to find the index of
      * @return a pair with index of the largest repeated sequence as key and of the sequence if found, a pair with -1 and null otherwise
      */
-    public Pair<Integer, String> indexOf(String s) {
-        Pair<Integer, String> indexPair = new Pair(-1, new String());
-        if(s.length() < CompressorUtils.MIN_ENCODING_LEN ) return indexPair;
+    public int indexOf(String s) {
+        if(s.length() < CompressorUtils.MIN_ENCODING_LEN ) return -1;
         String k = s.substring(0, CompressorUtils.MIN_ENCODING_LEN);
-        if(!sequenceIndices.containsKey(k)) return indexPair;
+        if(!sequenceIndices.containsKey(k)) return -1;
         ArrayList<Integer> allRepetitions = sequenceIndices.get(k);
         for(int repStart : allRepetitions) {
-            Pair<Integer, String> newPair = getIndexOf(repStart, s);
-            if(newPair.getValue().length() > indexPair.getValue().length()) {
-                indexPair = newPair;
+            int index = getIndexOf(repStart, s);
+            if(index >= 0) {
+                return index;
             }
         }
-        return indexPair;
+        return -1;
     }
 
     /**
-     * For a given sequence of bytes it will find the maximum ammout of bytes releated in the last MAX_ADDRESS_LEN bytes
+     * For a given sequence of bytes it will find the index of the repetition if it exists
      * @param start the index of the repetition with its offset
      * @param s the bytes to find
-     * @return a pair with the actual address location and the largest repetition
+     * @return the index of the repetition
      */
-    protected Pair getIndexOf(int start, String s) {
+    protected int getIndexOf(int start, String s) {
         int index = start >= removeOffset ? start - removeOffset : pastBytes.length() - removeOffset;
-        Pair<Integer, String> indexPair = new Pair(index, s.substring(0, CompressorUtils.MIN_ENCODING_LEN));
-        for(int i = CompressorUtils.MIN_ENCODING_LEN; i < s.length(); i++) {
-            if(pastBytes.length() <= (i + index) || s.charAt(i) != pastBytes.charAt(i + index)) {
-                return indexPair;
-            } else {
-                indexPair = new Pair(index, s.substring(0, i + 1));
+        for(int i = 0; i < s.length(); i++) {
+            if(pastBytes.length() == (i + index) || s.charAt(i) != pastBytes.charAt(i + index)) {
+                return -1;
             }
         }
-        return  indexPair;
+        return  index;
     }
 
     public int size() {
