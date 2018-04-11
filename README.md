@@ -31,7 +31,7 @@ A rough analysis was made for the performance of the algorithm meassuring memory
 | 100KB | 1s | 39MB |
 | 1MB | 6s | 21MB |
 | 5MB | 48s | 26MB |
-| 10MB | 125s | 46MB |
+| 10MB | 97s | 33MB |
 | 100MB | 1257s | 40MB |
 
 
