@@ -26,7 +26,6 @@ public class BlockReader {
      */
     public int next() throws IOException {
         if(data == -1) return -1;
-        int type = data >>> len - 1;
         int size = getNextBlockSize();
         readBlock(size);
         int next = -1;

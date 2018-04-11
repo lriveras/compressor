@@ -13,10 +13,6 @@ public class DecoderDictionary {
         pastBytes.append(c);
     }
 
-    public void addAllToIndex(char[] c) {
-        pastBytes.append(c);
-    }
-
     public void removeFirstFromIndex(int n) {
         pastBytes.delete(0, n);
     }

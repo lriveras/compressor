@@ -32,7 +32,6 @@ public class Decoder {
                 int amount = (b & CompressorUtils.FIRST_6_BITS_ON) + CompressorUtils.MIN_ENCODING_LEN; //adding offset
                 int blockStart = dic.size() - (distance + 1);//adding offset
                 int blockEnd = blockStart + amount;
-                char[] block = dic.substring(blockStart, blockEnd).toCharArray();
                 for (int i = blockStart; i < blockEnd; i++) {
                     char data = dic.charAt(i);
                     writeByte((byte) data);

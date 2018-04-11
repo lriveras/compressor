@@ -13,14 +13,14 @@ public class PerformanceTest {
         runEncode("1MB Test", TestUtils.PERFORMANCE_1MB, TestUtils.ENCODE_PERFORMANCE_1MB_OUTPUT);
         runEncode("5MB Test", TestUtils.PERFORMANCE_5MB, TestUtils.ENCODE_PERFORMANCE_5MB_OUTPUT);
         runEncode("10MB Test", TestUtils.PERFORMANCE_10MB, TestUtils.ENCODE_PERFORMANCE_10MB_OUTPUT);
-        runEncode("100MB Test", TestUtils.PERFORMANCE_100MB, TestUtils.ENCODE_PERFORMANCE_100MB_OUTPUT);
+//        runEncode("100MB Test", TestUtils.PERFORMANCE_100MB, TestUtils.ENCODE_PERFORMANCE_100MB_OUTPUT);
         System.out.println("\n\n");
         System.out.println("Decode Performance");
         runDecode("100KB Test", TestUtils.ENCODE_PERFORMANCE_100KB_OUTPUT, TestUtils.DECODE_PERFORMANCE_100KB_OUTPUT);
         runDecode("1MB Test", TestUtils.ENCODE_PERFORMANCE_1MB_OUTPUT, TestUtils.DECODE_PERFORMANCE_1MB_OUTPUT);
         runDecode("5MB Test", TestUtils.ENCODE_PERFORMANCE_5MB_OUTPUT, TestUtils.DECODE_PERFORMANCE_5MB_OUTPUT);
         runDecode("10MB Test", TestUtils.ENCODE_PERFORMANCE_10MB_OUTPUT, TestUtils.DECODE_PERFORMANCE_10MB_OUTPUT);
-        runDecode("100MB Test", TestUtils.ENCODE_PERFORMANCE_100MB_OUTPUT, TestUtils.DECODE_PERFORMANCE_100MB_OUTPUT);
+//        runDecode("100MB Test", TestUtils.ENCODE_PERFORMANCE_100MB_OUTPUT, TestUtils.DECODE_PERFORMANCE_100MB_OUTPUT);
     }
 
     public void runEncode(String runText, String source, String target) throws IOException {

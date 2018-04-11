@@ -10,7 +10,6 @@ public class EncoderDictionary {
 
     HashMap<String, ArrayList<Integer>> sequenceIndices;
     private StringBuilder pastBytes;
-    private int absoluteIndex = 0;
     private int addOffset = 0;
     private int removeOffset = 0;
 

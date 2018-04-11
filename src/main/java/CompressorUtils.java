@@ -7,7 +7,6 @@ public class CompressorUtils {
     public static int MAX_ENCODING_LEN = 66;
     public static int MAX_ADDRESS_LEN = 65536;
     public static int MIN_ENCODING_LEN = 3;
-    public static int MAX_ENCODER_DICTIONARY_LEN = MAX_ADDRESS_LEN * 4;
 
     public static int SINGLE_BLOCK_TYPE = 0;
     public static int ENCODED_BLOCK_TYPE = 1;

@@ -79,8 +79,7 @@ public class Encoder {
      * @throws IOException
      */
     protected void encodeFile() throws IOException {
-        boolean loaded = false;
-        while((loaded = loadBuffer())|| buffer.length() > 0) {
+        while(loadBuffer() || buffer.length() > 0) {
             Pair<Integer, String> encode = getEncodingLocation();
             if(encode.getKey() == -1) {
                 encodeSingleByteFromBuffer(buffer.charAt(0));
