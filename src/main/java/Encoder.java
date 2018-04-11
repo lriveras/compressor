@@ -104,16 +104,6 @@ public class Encoder {
      */
     protected Pair<Integer, String> getEncodingLocation() {
         int end = Math.min(buffer.length(), CompressorUtils.MAX_ENCODING_LEN);
-        Pair encode = new Pair(-1, null);
-        for(int i = CompressorUtils.MIN_ENCODING_LEN; i <= end; i++) {
-            String currBytes = buffer.substring(0, i);
-            int index = dic.indexOf(currBytes);
-            if(index >= 0) {
-                encode = new Pair(index, currBytes);
-            } else {
-                break;
-            }
-        }
-        return encode;
+        return dic.indexOf(buffer.substring(0, end));
     }
 }

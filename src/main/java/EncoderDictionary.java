@@ -1,3 +1,5 @@
+import javafx.util.Pair;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -82,28 +84,32 @@ public class EncoderDictionary {
      * @param s sequence to find the index of
      * @return the index of the sequence if found, -1 otherwise
      */
-    public int indexOf(String s) {
-        if(s.length() < CompressorUtils.MIN_ENCODING_LEN ) return -1;
+    public Pair<Integer, String> indexOf(String s) {
+        Pair<Integer, String> indexPair = new Pair(-1, new String());
+        if(s.length() < CompressorUtils.MIN_ENCODING_LEN ) return indexPair;
         String k = s.substring(0, CompressorUtils.MIN_ENCODING_LEN);
-        if(!sequenceIndices.containsKey(k)) return -1;
+        if(!sequenceIndices.containsKey(k)) return indexPair;
         ArrayList<Integer> allRepetitions = sequenceIndices.get(k);
         for(int repStart : allRepetitions) {
-            int index = getIndexOf(repStart, s);
-            if(index >= 0) {
-                return index;
+            Pair<Integer, String> newPair = getIndexOf(repStart, s);
+            if(newPair.getValue().length() > indexPair.getValue().length()) {
+                indexPair = newPair;
             }
         }
-        return -1;
+        return indexPair;
     }
 
-    protected int getIndexOf(int start, String s) {
+    protected Pair getIndexOf(int start, String s) {
         int index = start >= removeOffset ? start - removeOffset : pastBytes.length() - removeOffset;
-        for(int i = 0; i < s.length(); i++) {
-            if(pastBytes.length() == (i + index) || s.charAt(i) != pastBytes.charAt(i + index)) {
-                return -1;
+        Pair<Integer, String> indexPair = new Pair(index, s.substring(0, CompressorUtils.MIN_ENCODING_LEN));
+        for(int i = CompressorUtils.MIN_ENCODING_LEN; i < s.length(); i++) {
+            if(pastBytes.length() <= (i + index) || s.charAt(i) != pastBytes.charAt(i + index)) {
+                return indexPair;
+            } else {
+                indexPair = new Pair(index, s.substring(0, i + 1));
             }
         }
-        return  index;
+        return  indexPair;
     }
 
     public int size() {
