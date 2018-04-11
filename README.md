@@ -3,9 +3,9 @@
 ## Usage
 Package an executable jar.
 
-To compress a file run `runnable.jar -compress -path/to/source -path/to/output`
+To compress a file run `java -jar runnable.jar -compress -path/to/source -path/to/output`
 
-To decompress a file run `runnable.jar -decompress -path/to/source -path/to/output`
+To decompress a file run `java -jar runnable.jar -decompress -path/to/source -path/to/output`
 
 ## Compressor
 The compressor uses the dictionary to check for repetitions in the latest 2^16 bytes of memory. If a repetition of more than 3 bytes is found, it is encoded in a 23 block, otherwise the literal byte is written in a 9 bit block.
