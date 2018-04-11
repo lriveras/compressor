@@ -11,7 +11,7 @@ To decompress a file run `runnable.jar -decompress -path/to/source -path/to/outp
 The compressor uses the dictionary to check for repetitions in the latest 2^16 bytes of memory. If a repetition of more than 3 bytes is found, it is encoded in a 23 block, otherwise the literal byte is written in a 9 bit block.
 
 #### Dictionary
-The compressor uses a dictionary that hashes all the past combinations of three bytes with their index stored in them. The indexOf method for the dictionary recieves a sequence of bytes and returns the largest interation in the dictionary by checking if the 3 bytes sequence is in the hash and later compares more bytes until it does not find larger repetitions. The add byte to index method in the dictionary will calculate and hash the last 3 bytes going backwards.
+The compressor uses a dictionary that hashes all the past combinations of three bytes with their index stored in them. The indexOf method for the dictionary receives a sequence of bytes and returns the largest repeated sequence in the dictionary by checking if the 3 bytes sequence is in the hash and later compares more bytes until it does not find larger repetitions. The add byte to index method in the dictionary will calculate and hash the last 3 bytes going backwards.
 
 #### Block Writer
 The BlockWriter function is to write contiguous 9 and/or 23 bits to a file. 
