@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * EncoderDictionary maintains MAX_ENCODER_DICTIONARY_LEN bytes in memory and computes all the possible combination
- * of bytes for legths ranging from MIN_ENCODING_LEN to MAX_ENCODING_LEN. Every time a byte is added it will index all combinations
- * so they can be checked later on in constant access time.
+ * EncoderDictionary maintains MAX_ENCODER_DICTIONARY_LEN bytes in memory and hashes combination
+ * of bytes for length MIN_ENCODING_LEN. Every time a byte is added it will index its minimum repetition
+ * so they can be checked later on.
  */
 public class EncoderDictionary {
 
@@ -22,9 +22,7 @@ public class EncoderDictionary {
     }
 
     /**
-     * Adds byte to the dictionary and computes all combinations of characters from MIN_ENCODING_LEN to MAX_ENCODING_LEN
-     * if a sequence of character has already been indexed, it will store a reference to the first occurrence index
-     * to avoid recalculation and thus enhancing performance
+     * Adds byte to the dictionary with length MIN_ENCODING_LEN
      * @param c byte to add
      */
     public void addToIndex(char c) {
@@ -45,8 +43,7 @@ public class EncoderDictionary {
     }
 
     /**
-     * When memory is a constrain clearIndex will remove past unused sequences in the dictionary to maintain only the ones needed
-     * This operation becomes expensive as the dictionary size increases as it will iterate once through every removed character
+     * Removes last bytes until size is lest than MAX_ADDRESS_LEN in the dictionary to maintain only the ones needed
      */
     protected void clearIndex() {
         while(size() >  CompressorUtils.MAX_ADDRESS_LEN) {
@@ -60,6 +57,10 @@ public class EncoderDictionary {
         }
     }
 
+
+    /**
+     * Removes past unused sequences in the dictionary to maintain only the ones needed
+     */
     public void removeFirstFromIndex() {
         if(pastBytes.length() == 0) return;
         if(pastBytes.length() >= CompressorUtils.MIN_ENCODING_LEN) {
@@ -80,9 +81,8 @@ public class EncoderDictionary {
 
     /**
      * indexOf will caclulate the index of a repetition in the dictionary if there is any.
-     * The operation happens in constant access time as it uses cached indices to calculate the repetition index
      * @param s sequence to find the index of
-     * @return the index of the sequence if found, -1 otherwise
+     * @return a pair with index of the largest repeated sequence as key and of the sequence if found, a pair with -1 and null otherwise
      */
     public Pair<Integer, String> indexOf(String s) {
         Pair<Integer, String> indexPair = new Pair(-1, new String());
@@ -99,6 +99,12 @@ public class EncoderDictionary {
         return indexPair;
     }
 
+    /**
+     * For a given sequence of bytes it will find the maximum ammout of bytes releated in the last MAX_ADDRESS_LEN bytes
+     * @param start the index of the repetition with its offset
+     * @param s the bytes to find
+     * @return a pair with the actual address location and the largest repetition
+     */
     protected Pair getIndexOf(int start, String s) {
         int index = start >= removeOffset ? start - removeOffset : pastBytes.length() - removeOffset;
         Pair<Integer, String> indexPair = new Pair(index, s.substring(0, CompressorUtils.MIN_ENCODING_LEN));
@@ -115,32 +121,4 @@ public class EncoderDictionary {
     public int size() {
         return pastBytes.length();
     }
-
-    /**
-     * IndexNode is a helper class used in the dictionary to be stored in the mapped value. The class will only contain an index.
-     * This is used to be able to change all indices already mapped to a repetition at once
-     * instead of iterating through all the repetitions for a single character.
-     * This class is useful in the clearIndex method for switching the old reference
-     * of an index without iterating through all the combinations
-     */
-//    protected class IndexNode {
-//        protected int index;
-//        public IndexNode(int index) {
-//            this.index = index;
-//        }
-//
-//        public int getIndex() {
-//            return  index;
-//        }
-//
-//        public void setIndex(int index) {
-//            this.index = index;
-//        }
-//
-//        @Override
-//        public boolean equals(Object o) {
-//            if(!(o instanceof IndexNode)) return false;
-//            return ((IndexNode) o).getIndex() == this.getIndex();
-//        }
-//    }
 }

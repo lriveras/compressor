@@ -19,7 +19,7 @@ public class TestUtils {
     public static String ENCODE_PERFORMANCE_1MB_OUTPUT = "/src/test/resources/performance-1mb-output.txt";
     public static String DECODE_PERFORMANCE_1MB_OUTPUT = "/src/test/resources/performance-1mb-decode-output.txt";
 
-    public static String PERFORMANCE_5MB = "/src/test/resources/performance-5mb.txt";
+    public static String PERFORMANCE_5MB = "/src/test/resources/performance5-mb.txt";
     public static String ENCODE_PERFORMANCE_5MB_OUTPUT = "/src/test/resources/performance-5mb-output.txt";
     public static String DECODE_PERFORMANCE_5MB_OUTPUT = "/src/test/resources/performance-5mb-decode-output.txt";
 

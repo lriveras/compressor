@@ -98,9 +98,9 @@ public class Encoder {
     }
 
     /**
-     * Determines the ammount of bytes to include in the current block being encoded by looking at repetitions in the dictionary from
+     * Determines the location and ammount of bytes to include in the current block being encoded by looking at repetitions in the dictionary from
      * 66 bytes to 3 bytes if no repetition is found it will return length 1
-     * @return ammount of bytes to encode
+     * @return a pair with index and encoding location
      */
     protected Pair<Integer, String> getEncodingLocation() {
         int end = Math.min(buffer.length(), CompressorUtils.MAX_ENCODING_LEN);
