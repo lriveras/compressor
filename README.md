@@ -65,10 +65,10 @@ Performance tests also show a linear time complexity O(n).
 | File Size  | endTime - startTime (s)  | endTotalMemory - startTotalMemory (MB) |
 | --- | --- | --- |
 | 100KB | 0s | 0MB |
-| 1MB | 5s | 7MB |
-| 5MB | 35s | 4MB |
-| 10MB | 75s | 31MB |
-| 100MB | 805s | 20MB |
+| 1MB | 5s | 0MB |
+| 5MB | 35s | 0MB |
+| 10MB | 75s | 0MB |
+| 100MB | 805s | 0MB |
 
 
 Performance test files:
