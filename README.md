@@ -71,3 +71,15 @@ Performance tests also show a linear time complexity O(n).
 | 100MB | 805s | 20MB |
 
 
+Performance test files:
+
+https://drive.google.com/file/d/1Df9qw8bFVUYD5W7q4e5IFReE2H8wD5eC/view?usp=drive_web
+
+https://drive.google.com/file/d/1yY_jeA6exUI-JAlrOisvyWi8LYw66bJg/view?usp=drive_web
+
+https://drive.google.com/file/d/1XMxa_Iw-5jEy5QbPTe7-NLl0zMqjpFgr/view?usp=drive_web
+
+https://drive.google.com/file/d/1AUhWBY9xEVPQLl_5zveQ56qiS3d6TpX_/view?usp=drive_web
+
+https://drive.google.com/file/d/1vuvXqTG0Baic5K9XU_-kFfADlvIF9Pt7/view?usp=drive_web
+
